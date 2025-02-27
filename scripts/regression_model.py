@@ -9,8 +9,8 @@ from sklearn.metrics import mean_squared_error
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define file path
-DATA_PATH = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data_clean.csv'
-RESULTS_PATH = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\regression_results.csv'
+DATA_PATH = 'data/customer_data_clean.csv'
+RESULTS_PATH = 'data/regression_results.csv'
 
 def load_data(file_path):
     """Load dataset safely."""

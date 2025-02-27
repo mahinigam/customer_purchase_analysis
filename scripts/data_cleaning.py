@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load data
-df = pd.read_csv('C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data.csv')
+df = pd.read_csv('data/customer_data.csv')
 
 # Handle missing values
 df.dropna(inplace=True)
@@ -17,5 +17,5 @@ df['purchase_amount_log'] = df['purchase_amount'].apply(lambda x: np.log(x + 1))
 df = df.sort_values('purchase_amount', ascending=False)
 
 # Save cleaned data
-df.to_csv('C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data_clean.csv', index=False)
+df.to_csv('data/customer_data_clean.csv', index=False)
 print("Data cleaning complete. Cleaned file saved.")

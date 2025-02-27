@@ -11,7 +11,7 @@ DATABASE = 'customer_analysis'
 engine = create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}')
 
 # Load CSV data
-csv_file = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data.csv'
+csv_file = 'data/customer_data.csv'
 df = pd.read_csv(csv_file)
 
 # Load into MySQL

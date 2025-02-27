@@ -9,7 +9,7 @@ import numpy as np
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define file paths
-DATA_PATH = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data_clean.csv'
+DATA_PATH = 'data/customer_data_clean.csv'
 
 def load_data(file_path):
     """Load dataset and handle potential errors."""

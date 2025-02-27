@@ -6,8 +6,8 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define file paths
-DATA_PATH = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\customer_data_clean.csv'
-OUTPUT_PATH = 'C:\\Users\\mahin\\CustomerPurchaseAnalysis\\customer_purchase_analysis\\data\\aggregated_data.csv'
+DATA_PATH = 'data/customer_data_clean.csv'
+OUTPUT_PATH = 'data/aggregated_data.csv'
 
 def load_data(file_path):
     """Load dataset with error handling."""
