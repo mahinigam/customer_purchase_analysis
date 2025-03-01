@@ -1,1 +1,2 @@
+# # Automatically remove execution counts, outputs, and metadata from Jupyter notebooks before committing
 *.ipynb filter=strip-notebook
