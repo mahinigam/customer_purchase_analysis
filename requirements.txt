@@ -3,7 +3,8 @@ numpy
 matplotlib
 seaborn
 sqlalchemy
-mysql-connector-python
 scikit-learn
 jupyter
 openpyxl
+os
+logging
