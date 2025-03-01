@@ -8,3 +8,4 @@ jupyter
 openpyxl
 os
 logging
+python-dotenv

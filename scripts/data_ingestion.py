@@ -2,6 +2,10 @@ import pandas as pd
 from sqlalchemy import create_engine
 import logging
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -9,11 +13,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Define file path
 CSV_PATH = 'data/customer_data.csv'
 
-# MySQL connection details
-USERNAME = 'root'
-PASSWORD = 'root'
-HOST = 'localhost'
-DATABASE = 'customer_analysis'
+# Read credentials from environment variables
+USERNAME = os.getenv('MYSQL_USERNAME')
+PASSWORD = os.getenv('MYSQL_PASSWORD')
+HOST = os.getenv('MYSQL_HOST')
+DATABASE = os.getenv('MYSQL_DATABASE')
 
 def connect_to_db():
     """Connect to MySQL database."""
