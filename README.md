@@ -18,6 +18,7 @@ customer_purchase_analysis/
 ├── notebooks/
 │   ├── data_ingestion.ipynb           # Load data into MySQL database
 │   ├── data_cleaning.ipynb            # Clean and preprocess data
+|   ├── feature_engineering.ipynb      # Perform feature engineering on the data
 │   ├── eda_analysis.ipynb             # Perform exploratory data analysis
 │   ├── regression_model.ipynb         # Train regression model
 │   └── visualization_export.ipynb     # Aggregate and export data
@@ -25,6 +26,7 @@ customer_purchase_analysis/
 ├── scripts/
 |   ├── data_ingestion.py              # Loading into MYSQL databse
 |   ├── data_cleaning.py               # Cleaning and preprocessing
+|   ├── feature_engineering.py         # Perform feature engineering
 │   ├── eda_analysis.py                # EDA functions
 │   ├── regression_model.py            # Regression model training
 |   ├── visualization_export.py        # Aggregation and exporting data
@@ -36,33 +38,45 @@ customer_purchase_analysis/
 
 ## **Workflow**
 
-### 1️⃣ **Data Ingestion**
+### 1. **Data Ingestion**
 - **Notebook**: `notebooks/data_ingestion.ipynb`
 - **Objective**: Load raw customer data from a CSV file into a MySQL database.
 - **Output**: Data stored in the `customer_purchases` table.
 
-### 2️⃣ **Data Cleaning**
+### 2. **Data Cleaning**
 - **Notebook**: `notebooks/data_cleaning.ipynb`
 - **Objective**: Clean and preprocess the raw data.
-  - Handle missing values.
-  - Convert data types.
-  - Add log-transformed features.
+  - Handle missing values in critical columns.
+  - Replace invalid categorical values (e.g., Gender, Loyalty Member, Order Status) with the mode.
+  - Convert data types for numeric columns.
+  - Fill missing 'Add-ons Purchased' with 'No Add-ons'.
 - **Output**: `data/customer_data_clean.csv`
 
-### 3️⃣ **Exploratory Data Analysis (EDA)**
+### 3. **Feature Engineering**
+- **Notebook**: `notebooks/feature_engineering.ipynb`
+- **Objective**: Create new features to enhance analysis.
+  - Calculate spend per unit and total spend.
+  - Encode categorical variables (Gender, Payment Method, Shipping Type, Product Type).
+  - Extract date features (month, day, weekday) from purchase date.
+  - Identify loyalty status and add-on usage.
+  - Count add-ons and compute add-on cost per unit.
+- **Output**: `data/engineered_data.csv`
+
+### 4. **Exploratory Data Analysis (EDA)**
 - **Notebook**: `notebooks/eda_analysis.ipynb`
 - **Objective**: Analyze trends and visualize data.
   - Purchase amount distribution.
-  - Spending by region.
-  - Purchase frequency.
+  - Revenue by loyalty status.
+  - Time-based sales trends.
+  - Identify missing values and dataset overview.
 - **Output**: Visualizations and insights.
 
-### 4️⃣ **Regression Modeling**
+### 5. **Regression Modeling**
 - **Notebook**: `notebooks/regression_model.ipynb`
 - **Objective**: Train a linear regression model to predict customer purchase behavior.
 - **Output**: `data/regression_results.csv`
 
-### 5️⃣ **Data Aggregation & Export**
+### 6. **Data Aggregation & Export**
 - **Notebook**: `notebooks/visualization_export.ipynb`
 - **Objective**: Aggregate data by region, product category, and purchase frequency, and export results for visualization.
 - **Output**: `data/aggregated_data.xlsx`
@@ -102,10 +116,11 @@ customer_purchase_analysis/
 ---
 
 ## **Key Features**
-- **Data Cleaning**: Ensures high-quality data for analysis.
-- **EDA**: Provides insights into customer behavior.
-- **Predictive Modeling**: Uses regression to predict purchase amounts.
-- **Visualization Export**: Aggregates data for business insights.
+- **Data Cleaning**: Ensures high-quality data for analysis by handling missing values, correcting invalid entries, and standardizing data types.
+- **Feature Engineering**: Creates new features such as spend per unit, total spend, encoded categorical variables, date-based features, add-on usage, and more to enrich the dataset for analysis and modeling.
+- **EDA**: Provides insights into customer behavior, spending patterns, loyalty, and sales trends through visualizations and descriptive statistics.
+- **Predictive Modeling**: Uses regression to predict purchase amounts and uncover key drivers of customer spending.
+- **Visualization Export**: Aggregates and exports data for business intelligence and visualization tools.
 
 ---
 
