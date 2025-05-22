@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import logging
 import os
 
@@ -9,62 +8,114 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 RAW_DATA_PATH = "data/customer_data.csv"
 CLEANED_DATA_PATH = "data/customer_data_clean.csv"
 
+# Create data directory if it doesn't exist
+os.makedirs(os.path.dirname(CLEANED_DATA_PATH), exist_ok=True)
+
 def load_data(file_path):
-    """Load dataset with error handling."""
     if not os.path.exists(file_path):
         logging.error(f"File not found: {file_path}")
         return None
     
     try:
         df = pd.read_csv(file_path)
-        logging.info("Data successfully loaded.")
+        logging.info(f"Data successfully loaded from {file_path}")
         return df
+    
     except Exception as e:
         logging.error(f"Error loading data: {e}")
         return None
 
-def clean_missing_values(df):
-    """Remove rows with missing values."""
+# Convert data types
+def convert_data_types(df):
     if df is None:
-        logging.error("No data available for cleaning.")
+        logging.error("No data to convert.")
         return
     
     try:
-        df.dropna(inplace=True)
-        logging.info(f"Missing values removed. Rows before: {len(df)}, After: {len(df)}")
+        columns = ['Customer ID', 'Age', 'Rating', 'Total Price', 'Unit Price', 'Quantity', 'Add-on Total']
+
+        df[columns] = df[columns].apply(pd.to_numeric, errors='coerce')
+        logging.info("Data types converted successfully.")
         return df
+    
+    except Exception as e:
+        logging.error(f"Error converting data types: {e}")
+        return None
+    
+# Handle invalid values
+def handle_invalid_values(df):
+    if df is None:
+        logging.error("No data to handle,")
+        return
+    
+    try:
+        # Replaces invalid gender entries with the mode
+        valid_genders = ['Male', 'Female']
+        invalid_genders_mask = ~df['Gender'].isin(valid_genders)
+        df.loc[invalid_genders_mask, 'Gender'] = df['Gender'].mode()[0]
+
+        # Replaces invalid loyalty status with the mode
+        valid_loyalty_status = ['No', 'Yes']
+        invalid_loyaltystatus_mask = ~df['Loyalty Member'].isin(valid_loyalty_status)
+        df.loc[invalid_loyaltystatus_mask, 'Loyalty Member'] = df['Loyalty Member'].mode()[0]
+
+        # Replaces invalid order status with the mode
+        valid_order_status = ['Cancelled', 'Completed']
+        invalid_orderstatus_mask = ~df['Order Status'].isin(valid_order_status)
+        df.loc[invalid_orderstatus_mask, 'Order Status'] = df['Order Status'].mode()[0]
+
+
+        logging.info(f"Invalid genders handled.")
+        return df
+    
+    except Exception as e:
+        logging.error(f"Error handling invalid values: {e}")
+        return None
+    
+# Handle missing values
+def clean_missing_values(df):
+    if df is None:
+        logging.error("No data to clean.")
+        return
+    
+    try:
+        length_before = len(df)
+
+        # Drop rows with missing values in critical columns
+        df.dropna(subset=['Customer ID', 'Age', 'Gender', 'Loyalty Member', 'Product Type', 'SKU', 'Rating', 'Order Status', 'Payment Method', 'Total Price', 'Unit Price', 'Quantity', 'Purchase Date', 'Shipping Type'], inplace=True)
+
+        # Replaces missing values in 'Add-ons Purchased' with 'No Add-ons'
+        df['Add-ons Purchased'] = df['Add-ons Purchased'].fillna('No Add-ons')
+
+        length_after = len(df)
+
+        logging.info(f"Missing values handled. Rows before: {length_before}, After: {length_after}")
+        return df
+    
     except Exception as e:
         logging.error(f"Error cleaning missing values: {e}")
         return None
 
-def convert_data_types(df):
-    """Convert purchase_amount to numeric."""
+# Save cleaned data
+def save_cleaned_data(df, file_path):
     if df is None:
-        logging.error("No data available for conversion.")
+        logging.error("No data to save.")
         return
     
     try:
-        df['purchase_amount'] = pd.to_numeric(df['purchase_amount'], errors='coerce')
-        logging.info("Data types converted successfully.")
-        return df
+        df.to_csv(file_path, index=False)
+        logging.info("Cleaned data saved successfully.")
+
     except Exception as e:
-        logging.error(f"Error converting data types: {e}")
-        return None
+        logging.error(f"Error saving cleaned data: {e}")
 
-def feature_engineering(df):
-    """Creates log-transformed purchase_amount column."""
-    df['purchase_amount_log'] = df['purchase_amount'].apply(lambda x: np.log(x + 1))
-    return df
+def main():
+    df = load_data(RAW_DATA_PATH)
+    if df is not None:
+        df = convert_data_types(df)
+        df = handle_invalid_values(df)
+        df = clean_missing_values(df)
+        save_cleaned_data(df, CLEANED_DATA_PATH)
 
-def save_cleaned_data(df, file_path):
-    """Saves the cleaned dataset to a CSV file."""
-    df = df.sort_values('purchase_amount', ascending=False)
-    df.to_csv(file_path, index=False)
-    logging.info("Cleaned data saved successfully.")
-
-df = load_data(RAW_DATA_PATH)
-if df is not None:
-    df = clean_missing_values(df)
-    df = convert_data_types(df)
-    df = feature_engineering(df)
-    save_cleaned_data(df, CLEANED_DATA_PATH)
+if __name__ == "__main__":
+    main()
