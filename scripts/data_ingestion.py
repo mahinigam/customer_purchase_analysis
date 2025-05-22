@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import logging
 import os
 from dotenv import load_dotenv
@@ -20,17 +20,23 @@ HOST = os.getenv('MYSQL_HOST')
 DATABASE = os.getenv('MYSQL_DATABASE')
 
 def connect_to_db():
-    """Connect to MySQL database."""
     try:
-        engine = create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}')
+        # Create a new database if it doesn't exist
+        engine =  create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}')
+        connection = engine.conenct()
+        connection.execute(text(f"CREATE DATABASE IF NOT EXISTS {DATABASE}"))
+
+        # Connect to the database
+        db_engine = create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}')
+
         logging.info("MySQL database connected successfully.")
-        return engine
+        return db_engine
+    
     except Exception as e:
         logging.error(f"Error connecting to MySQL database: {e}")
         return None
 
 def load_csv_to_mysql(CSV_PATH):
-    """Load CSV data into MySQL database."""
     if not os.path.exists(CSV_PATH):
         logging.error(f"File not found: {CSV_PATH}")
         return None
@@ -42,7 +48,7 @@ def load_csv_to_mysql(CSV_PATH):
         logging.error(f"Error loading data from {CSV_PATH}: {e}")
         return None 
 
-    # Load into MySQL
+    # Connect to MySQL database
     table_name = 'customer_purchases'
     engine = connect_to_db()
     if not engine:
