@@ -1,7 +1,7 @@
 # Customer Purchase Analysis
 
 ## **Objective**
-This project aims to analyze customer purchase data to derive insights, perform predictive modeling, and visualize trends. The workflow includes data ingestion, cleaning, exploratory data analysis (EDA), regression modeling, and exporting aggregated data for visualization.
+This project aims to analyze customer purchase data to derive insights, perform predictive modeling, and visualize trends. The workflow includes data ingestion, cleaning, exploratory data analysis (EDA), regression modeling, and exporting aggregated data for visualization in Power BI.
 
 ---
 
@@ -18,18 +18,24 @@ customer_purchase_analysis/
 ├── notebooks/
 │   ├── data_ingestion.ipynb           # Load data into MySQL database
 │   ├── data_cleaning.ipynb            # Clean and preprocess data
-|   ├── feature_engineering.ipynb      # Perform feature engineering on the data
+│   ├── feature_engineering.ipynb      # Perform feature engineering on the data
 │   ├── eda_analysis.ipynb             # Perform exploratory data analysis
 │   ├── regression_model.ipynb         # Train regression model
 │   └── visualization_export.ipynb     # Aggregate and export data
 │
 ├── scripts/
-|   ├── data_ingestion.py              # Loading into MYSQL databse
-|   ├── data_cleaning.py               # Cleaning and preprocessing
-|   ├── feature_engineering.py         # Perform feature engineering
+│   ├── data_ingestion.py              # Loading into MYSQL database
+│   ├── data_cleaning.py               # Cleaning and preprocessing
+│   ├── feature_engineering.py         # Perform feature engineering
 │   ├── eda_analysis.py                # EDA functions
 │   ├── regression_model.py            # Regression model training
-|   ├── visualization_export.py        # Aggregation and exporting data
+│   └── visualization_export.py        # Aggregation and exporting data
+│
+├── dashboards/
+│   └── customer_dashboard.pbix        # Power BI dashboard file
+│
+├── assets/
+│   └── dashboard_preview.png          # Power BI dashboard screenshot
 │
 └── README.md                          # Project documentation
 ```
@@ -73,13 +79,24 @@ customer_purchase_analysis/
 
 ### 5. **Regression Modeling**
 - **Notebook**: `notebooks/regression_model.ipynb`
-- **Objective**: Train a linear regression model to predict customer purchase behavior.
+- **Objective**: Train a regression model to predict customer purchase behavior.
 - **Output**: `data/regression_results.csv`
 
 ### 6. **Data Aggregation & Export**
 - **Notebook**: `notebooks/visualization_export.ipynb`
-- **Objective**: Aggregate data by region, product category, and purchase frequency, and export results for visualization.
+- **Objective**: Aggregate data by product category, loyalty, age, add-ons, and more for BI tools.
 - **Output**: `data/aggregated_data.xlsx`
+
+### 7. **Power BI Dashboard**
+- **File**: `dashboards/customer_dashboard.pbix`
+- **Objective**: Build an interactive dashboard from the exported data.
+- **Features**:
+  - Monthly & Weekly Sales Trends
+  - Revenue by Product Type, Gender, Loyalty, Age Group
+  - Add-on Frequency and Count
+  - Shipping Preferences
+  - Interactive Slicers
+- **Preview**: ![Dashboard Preview](assets/dashboard_preview.png)
 
 ---
 
@@ -88,6 +105,7 @@ customer_purchase_analysis/
 ### Prerequisites
 - Python 3.8+
 - MySQL database
+- Power BI Desktop (for viewing `.pbix`)
 - Required Python libraries (see `requirements.txt`)
 
 ### Steps
@@ -103,15 +121,17 @@ customer_purchase_analysis/
    ```
 
 3. Configure MySQL database:
-   - Update database credentials in `notebooks/data_ingestion.ipynb`.
+   - Update database credentials in `notebooks/data_ingestion.ipynb`
 
 4. Run the workflow:
    - Execute notebooks in the following order:
      1. `data_ingestion.ipynb`
      2. `data_cleaning.ipynb`
-     3. `eda_analysis.ipynb`
-     4. `regression_model.ipynb`
-     5. `visualization_export.ipynb`
+     3. `feature_engineering.ipynb`
+     4. `eda_analysis.ipynb`
+     5. `regression_model.ipynb`
+     6. `visualization_export.ipynb`
+     7. Open `customer_dashboard.pbix` in Power BI to view dashboard
 
 ---
 
@@ -120,14 +140,8 @@ customer_purchase_analysis/
 - **Feature Engineering**: Creates new features such as spend per unit, total spend, encoded categorical variables, date-based features, add-on usage, and more to enrich the dataset for analysis and modeling.
 - **EDA**: Provides insights into customer behavior, spending patterns, loyalty, and sales trends through visualizations and descriptive statistics.
 - **Predictive Modeling**: Uses regression to predict purchase amounts and uncover key drivers of customer spending.
-- **Visualization Export**: Aggregates and exports data for business intelligence and visualization tools.
-
----
-
-## **Next Steps**
-- Use the exported data for Tableau or other visualization tools.
-- Extend the regression model with additional features or algorithms.
-- Explore clustering or segmentation for customer profiling.
+- **Visualization Export**: Aggregates and exports data for business intelligence tools like Tableau and Power BI.
+- **Power BI Dashboard**: Professional, interactive dashboard visualizing KPIs and trends with dynamic filters.
 
 ---
 
