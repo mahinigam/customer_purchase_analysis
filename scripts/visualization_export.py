@@ -1,68 +1,85 @@
-import pandas as pd
-import logging
 import os
+import logging
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Define file paths
-DATA_PATH = 'data/customer_data_clean.csv'
-OUTPUT_PATH = 'data/aggregated_data.xlsx'
+# Ensure output directory exists
+os.makedirs("plots", exist_ok=True)
+
+data_path = "data/cleaned_customer_data.csv"
 
 def load_data(file_path):
-    """Load dataset with error handling."""
     if not os.path.exists(file_path):
         logging.error(f"File not found: {file_path}")
         return None
     try:
         df = pd.read_csv(file_path)
-        logging.info("Data successfully loaded.")
+        logging.info(f"Data loaded successfully from {file_path}")
         return df
     except Exception as e:
         logging.error(f"Error loading data: {e}")
         return None
 
-def aggregate_data(df):
-    """Aggregate purchase amount by region, product category, and purchase frequency."""
-    if df is None:
-        logging.error("No data available for aggregation.")
-        return
-    
-    try:
-        # Aggregate total purchase amount by region
-        region_sales = df.groupby('region')['purchase_amount'].sum().reset_index()
-        region_sales.rename(columns={'purchase_amount': 'total_sales'}, inplace=True)
+def plot_distribution(df):
+    plt.figure(figsize=(10, 6))
+    sns.histplot(df['Purchase_Amount'], bins=30, kde=True)
+    plt.title('Distribution of Purchase Amount')
+    plt.xlabel('Purchase Amount')
+    plt.ylabel('Frequency')
+    plt.tight_layout()
+    path = "plots/purchase_amount_distribution.png"
+    plt.savefig(path)
+    plt.close()
+    logging.info(f"Saved plot: {path}")
 
-        # Aggregate total purchase amount by product category
-        category_sales = df.groupby('product_category')['purchase_amount'].sum().reset_index()
-        category_sales.rename(columns={'purchase_amount': 'total_sales'}, inplace=True)
+def plot_by_gender(df):
+    plt.figure(figsize=(8, 5))
+    sns.boxplot(x='Gender', y='Purchase_Amount', data=df)
+    plt.title('Purchase Amount by Gender')
+    plt.xlabel('Gender')
+    plt.ylabel('Purchase Amount')
+    plt.tight_layout()
+    path = "plots/purchase_by_gender.png"
+    plt.savefig(path)
+    plt.close()
+    logging.info(f"Saved plot: {path}")
 
-        # Aggregate total purchase amount by purchase frequency
-        frequency_sales = df.groupby('purchase_frequency')['purchase_amount'].sum().reset_index()
-        frequency_sales.rename(columns={'purchase_amount': 'total_sales'}, inplace=True)
+def plot_by_age_group(df):
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Age_Group', y='Purchase_Amount', data=df, estimator=pd.Series.mean, ci=None)
+    plt.title('Average Purchase Amount by Age Group')
+    plt.xlabel('Age Group')
+    plt.ylabel('Average Purchase Amount')
+    plt.tight_layout()
+    path = "plots/avg_purchase_by_age.png"
+    plt.savefig(path)
+    plt.close()
+    logging.info(f"Saved plot: {path}")
 
-        logging.info("Data aggregation complete.")
-        return region_sales, category_sales, frequency_sales
+def plot_correlation_heatmap(df):
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')
+    plt.title('Correlation Heatmap')
+    plt.tight_layout()
+    path = "plots/correlation_heatmap.png"
+    plt.savefig(path)
+    plt.close()
+    logging.info(f"Saved plot: {path}")
 
-    except Exception as e:
-        logging.error(f"Error during data aggregation: {e}")
-        return None
-
-def export_data(aggregated_data):
-    """Export aggregated data to Excel."""    
-    if aggregated_data:
-        try:
-            with pd.ExcelWriter(OUTPUT_PATH) as writer:
-                aggregated_data[0].to_excel(writer, sheet_name="Region Sales", index=False)
-                aggregated_data[1].to_excel(writer, sheet_name="Category Sales", index=False)
-                aggregated_data[2].to_excel(writer, sheet_name="Frequency Sales", index=False)
-            logging.info(f"Aggregated data exported successfully: {OUTPUT_PATH}")
-        except Exception as e:
-            logging.error(f"Error exporting data: {e}")
+def main():
+    df = load_data(data_path)
+    if df is not None:
+        plot_distribution(df)
+        plot_by_gender(df)
+        plot_by_age_group(df)
+        plot_correlation_heatmap(df)
+        logging.info("All visualizations created successfully.")
     else:
-        logging.error("No data available for export.")
+        logging.error("Data loading failed. Visualization skipped.")
 
 if __name__ == "__main__":
-    df = load_data(DATA_PATH)
-    aggregated_data = aggregate_data(df)
-    export_data(aggregated_data)
+    main()
