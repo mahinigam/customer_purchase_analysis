@@ -32,7 +32,7 @@ customer_purchase_analysis/
 │   └── visualization_export.py        # Aggregation and exporting data
 │
 ├── dashboards/
-│   └── customer_dashboard.pbix        # Power BI dashboard file
+│   └── data_dashboard.pbix            # Power BI dashboard file
 │
 ├── assets/
 │   └── dashboard_preview.png          # Power BI dashboard screenshot
@@ -88,7 +88,7 @@ customer_purchase_analysis/
 - **Output**: `data/aggregated_data.xlsx`
 
 ### 7. **Power BI Dashboard**
-- **File**: `dashboards/customer_dashboard.pbix`
+- **File**: `dashboards/data_dashboard.pbix`
 - **Objective**: Build an interactive dashboard from the exported data.
 - **Features**:
   - Monthly & Weekly Sales Trends
@@ -131,7 +131,7 @@ customer_purchase_analysis/
      4. `eda_analysis.ipynb`
      5. `regression_model.ipynb`
      6. `visualization_export.ipynb`
-     7. Open `customer_dashboard.pbix` in Power BI to view dashboard
+     7. Open `data_dashboard.pbix` in Power BI to view dashboard
 
 ---
 
