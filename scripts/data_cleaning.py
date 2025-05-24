@@ -97,6 +97,22 @@ def clean_missing_values(df):
         logging.error(f"Error cleaning missing values: {e}")
         return None
 
+# Remove duplicates
+def remove_duplicates(df):
+    if df is None:
+        logging.error("No data to check for duplicates.")
+        return
+    try:
+        before = len(df)
+        df = df.drop_duplicates()
+        after = len(df)
+        logging.info(f"Removed {before - after} duplicate rows.")
+        return df
+    except Exception as e:
+        logging.error(f"Error removing duplicates: {e}")
+        return df
+
+# Handle outliers using IQR method
 def handle_outliers(df):
     if df is None:
         logging.error("No data to handle outliers.")
@@ -118,6 +134,7 @@ def handle_outliers(df):
         logging.error(f"Error handling outliers: {e}")
         return df
 
+# Apply log transformation to skewed data
 def transform_skewed_data(df):
     if df is None:
         logging.error("No data to transform.")
@@ -132,6 +149,7 @@ def transform_skewed_data(df):
         logging.error(f"Error transforming data: {e}")
         return df
 
+# Print summary statistics and save to CSV
 def print_summary_statistics(df):
     if df is None:
         logging.error("No data for summary statistics.")
@@ -167,6 +185,7 @@ def main():
         df = convert_data_types(df)
         df = handle_invalid_values(df)
         df = clean_missing_values(df)
+        df = remove_duplicates(df)
         df = handle_outliers(df)
         df = transform_skewed_data(df)
         print_summary_statistics(df)
