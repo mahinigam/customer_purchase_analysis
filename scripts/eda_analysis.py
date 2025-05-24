@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
@@ -23,6 +24,31 @@ def load_data(file_path):
         logging.error(f"Error loading data: {e}")
         return None
     
+def print_summary_statistics(df):
+    stats = df.describe(include='all')
+    logging.info(f"Summary Statistics: \n{stats}")
+    # Value counts for key categorical columns
+    for col in ['Gender', 'Loyalty Member', 'Order Status', 'Payment Method', 'Product Type']:
+        logging.info(f"\nValue counts for {col}:\n{df[col].value_counts()}")
+
+def report_anomalies(df):
+    # Simple anomaly detection: z-score > 3 for numeric columns
+    numeric_cols = ['Total Price', 'Unit Price', 'Quantity', 'Add-on Total', 'Age']
+    anomalies = pd.DataFrame()
+    for col in numeric_cols:
+        if col in df.columns:
+            z = np.abs((df[col] - df[col].mean()) / df[col].std())
+            outliers = df[z > 3]
+            if not outliers.empty:
+                logging.info(f"\nAnomalies detected in {col}:")
+                logging.info(outliers[[col]])
+                anomalies = pd.concat([anomalies, outliers])
+    if anomalies.empty:
+        logging.info("No significant anomalies detected.")
+    else:
+        anomalies.drop_duplicates().to_csv("data/anomalies_report.csv", index=False)
+        logging.info("Anomalies report saved to data/anomalies_report.csv")
+
 # 1. Revenue and Loyalty Analysis
 def revenue_loyalty_analysis(df):
     sns.boxplot(data=df, x='Loyalty Member', y='Total Price')
@@ -154,6 +180,8 @@ def pairplot(df):
 def main():
     df = load_data(ENGINEERED_DATA_PATH)
     if df is not None:
+        print_summary_statistics(df)
+        report_anomalies(df)
         revenue_loyalty_analysis(df)
         time_sales_trends(df)
         customer_behaviour_analysis(df)

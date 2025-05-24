@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import logging
 import os
 
@@ -96,6 +97,57 @@ def clean_missing_values(df):
         logging.error(f"Error cleaning missing values: {e}")
         return None
 
+def handle_outliers(df):
+    if df is None:
+        logging.error("No data to handle outliers.")
+        return
+    try:
+        numeric_cols = ['Age', 'Total Price', 'Unit Price', 'Quantity', 'Add-on Total']
+        for col in numeric_cols:
+            Q1 = df[col].quantile(0.25)
+            Q3 = df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower = Q1 - 1.5 * IQR
+            upper = Q3 + 1.5 * IQR
+            before = len(df)
+            df = df[(df[col] >= lower) & (df[col] <= upper)]
+            after = len(df)
+            logging.info(f"Outliers removed in {col}: {before - after}")
+        return df
+    except Exception as e:
+        logging.error(f"Error handling outliers: {e}")
+        return df
+
+def transform_skewed_data(df):
+    if df is None:
+        logging.error("No data to transform.")
+        return
+    try:
+        skewed_cols = ['Total Price', 'Unit Price', 'Add-on Total']
+        for col in skewed_cols:
+            df[f'log_{col}'] = np.log1p(df[col])
+        logging.info("Log transformation applied to skewed columns.")
+        return df
+    except Exception as e:
+        logging.error(f"Error transforming data: {e}")
+        return df
+
+def print_summary_statistics(df):
+    if df is None:
+        logging.error("No data for summary statistics.")
+        return
+    try:
+        stats = df.describe(include='all')
+        stats.to_csv("data/summary_statistics.csv")
+        logging.info("Summary statistics saved to data/summary_statistics.csv")
+        # Also print a concise summary to console
+        print(stats)
+        # Value counts for key categorical columns
+        for col in ['Gender', 'Loyalty Member', 'Order Status', 'Payment Method', 'Product Type']:
+            print(f"\nValue counts for {col}:\n{df[col].value_counts()}")
+    except Exception as e:
+        logging.error(f"Error generating summary statistics: {e}")
+
 # Save cleaned data
 def save_cleaned_data(df, file_path):
     if df is None:
@@ -115,6 +167,9 @@ def main():
         df = convert_data_types(df)
         df = handle_invalid_values(df)
         df = clean_missing_values(df)
+        df = handle_outliers(df)
+        df = transform_skewed_data(df)
+        print_summary_statistics(df)
         save_cleaned_data(df, CLEANED_DATA_PATH)
 
 if __name__ == "__main__":
